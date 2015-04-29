@@ -1,8 +1,51 @@
 
-local Version = "1.0"
-local AutoUpdate = false
+local Version = 1.0
+local AUTO_UPDATE = true
 
 if myHero.charName ~="Teemo" then return end
+
+local UPDATE_HOST = "raw.github.com"
+
+local UPDATE_PATH = "/sunyny/BolScripts/7fc64a41600b58b345d6305848884970c110355f/TEAM Y Teemo.lua".."?rand="..math.random(1,10000)
+
+local UPDATE_FILE_PATH = LIB_PATH.."TEAM Y Teemo.lua"
+
+local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
+
+if AUTO_UPDATE then
+
+	local ServerData = GetWebResult(UPDATE_HOST, "/sunyny/BolScripts/7fc64a41600b58b345d6305848884970c110355f/TEAM Y Teemo.version")
+
+	if ServerData then
+
+		ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil
+
+		if ServerVersion then
+
+			if tonumber(version) < ServerVersion then
+
+				ScriptMsg("New version available"..ServerVersion)
+
+				ScriptMsg("Updating, please don't press F9")
+
+				DelayAction(function() DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () ScriptMsg("Successfully updated. Thnaks use TEAM Y Teemo ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end) end, 3)
+
+			else
+
+				ScriptMsg("You have got the latest version. Thnaks use TEAM Y Teemo ("..ServerVersion..")")
+
+			end
+
+		end
+
+	else
+
+		ScriptMsg("Error downloading version info")
+
+	end
+
+end
+
  
  function ScriptMsg(msg)
   print("<font color=\"#daa520\"><b>Team Y Teemo:</b></font> <font color=\"#FFFFFF\">"..msg.."</font>")
@@ -109,8 +152,6 @@ end
 -- menu
 
  function OnLoad()
-	
-ScriptMsg("Thanks use Team Y Teemo")
 
 
 
