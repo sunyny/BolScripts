@@ -1,54 +1,49 @@
+local Version = "1.0"
+local AutoUpdate = true
 
-local Version = 1.0
-local AUTO_UPDATE = true
 
 if myHero.charName ~="Teemo" then return end
 
-local UPDATE_HOST = "raw.github.com"
-
-local UPDATE_PATH = "/sunyny/BolScripts/gh-pages/TEAM Y Teemo.lua".."?rand="..math.random(1,10000)
-
-local UPDATE_FILE_PATH = LIB_PATH.."TEAM Y Teemo.lua"
-
-local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
-
-if AUTO_UPDATE then
-
-	local ServerData = GetWebResult(UPDATE_HOST, "/sunyny/BolScripts/gh-pages/TEAM Y Teemo.version")
-
-	if ServerData then
-
-		ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil
-
-		if ServerVersion then
-
-			if tonumber(version) < ServerVersion then
-
-				ScriptMsg("New version available"..ServerVersion)
-
-				ScriptMsg("Updating, please don't press F9")
-
-				DelayAction(function() DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () ScriptMsg("Successfully updated. Thnaks use TEAM Y Teemo ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end) end, 3)
-
-			else
-
-				ScriptMsg("You have got the latest version. Thnaks use TEAM Y Teemo ("..ServerVersion..")")
-
-			end
-
-		end
-
-	else
-
-		ScriptMsg("Error downloading version info")
-
-	end
-
-end
-
- 
  function ScriptMsg(msg)
   print("<font color=\"#daa520\"><b>Team Y Teemo:</b></font> <font color=\"#FFFFFF\">"..msg.."</font>")
+end
+
+--
+
+local Host = "raw.github.com"
+
+local ScriptFilePath = SCRIPT_PATH..GetCurrentEnv().FILE_NAME
+
+local ScriptPath = "/sunyny/BolScripts/gh-pages/TEAM Y Teemo.lua".."?rand="..math.random(1,10000)
+local UpdateURL = "https://"..Host..ScriptPath
+
+local VersionPath = "/sunyny/BolScripts/gh-pages/TEAM Y Teemo.version".."?rand="..math.random(1,10000)
+local VersionData = tonumber(GetWebResult(Host, VersionPath))
+
+if AutoUpdate then
+
+  if VersionData then
+  
+    ServerVersion = type(VersionData) == "number" and VersionData or nil
+    
+    if ServerVersion then
+    
+      if tonumber(Version) < ServerVersion then
+        ScriptMsg("New version available: v"..VersionData)
+        ScriptMsg("Updating, please don't press F9.")
+        DelayAction(function() DownloadFile(UpdateURL, ScriptFilePath, function () ScriptMsg("Successfully updated.: v"..Version.." => v"..VersionData..", Press F9 twice to load the updated version.") end) end, 3)
+      else
+        ScriptMsg("You've got the latest version("..Version") Thanks Use TEAM Y Teemo")
+      end
+      
+    end
+    
+  else
+    ScriptMsg("Error downloading version info.")
+  end
+  
+else
+  ScriptMsg("AutoUpdate: false")
 end
 
 -- update
@@ -282,7 +277,7 @@ end
 function harass()
 		if ConfigYT.harass.harasshotkey then
 			local target = STS:GetTarget(680)
-			if ConfigYT.harass.harassQ and Q.IsReady() and GetDistance(myHero, target) < 680 then
+			if ConfigYT.harass.harassQ and Q.IsReady() then
 				CastSpell(_Q,target)
 		end
 	end 
@@ -323,7 +318,7 @@ function killsteal()
 	local i, Champion
    for i, Champion in pairs(EnemyHeroes) do
    		local ITargetDmg = GetDmg("IGNITE", Champion)
-		 if I.IsReady() and ConfigYT.ignite.autouse and ITargetDmg >= Champion.health and ValidTarget(Champion) and GetDistance(Champion, Player) <= 400  then
+		 if I.IsReady() and ConfigYT.ignite.autouse and ITargetDmg >= Champion.health and ValidTarget(Champion) and GetDistance(Champion, Player) <= 560  then
 			  CastSpell(Ignite, Champion)
 			end
 
