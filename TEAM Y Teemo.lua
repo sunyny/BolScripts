@@ -1,7 +1,3 @@
-local Version = "1.0"
-local AutoUpdate = true
-
-
 if myHero.charName ~="Teemo" then return end
 
  function ScriptMsg(msg)
@@ -10,41 +6,44 @@ end
 
 --
 
-local Host = "raw.github.com"
+local Author = "fizssy"
+local version = "1.0"
 
-local ScriptFilePath = SCRIPT_PATH..GetCurrentEnv().FILE_NAME
+local SCRIPT_INFO = {
+	["Name"] = "TEAM Y Teemo",
+	["Version"] = 1.0,
+	["Author"] = {
+		["fizssy"] = "http://forum.botoflegends.com/user/162058-fizssy/"
+	},
+}
+local SCRIPT_UPDATER = {
+	["Activate"] = true,
+	["Script"] = SCRIPT_PATH..GetCurrentEnv().FILE_NAME,
+	["URL_HOST"] = "raw.github.com",
+	["URL_PATH"] = "/sunyny/BolScripts/gh-pages/TEAM Y Teemo.lua",
+	["URL_VERSION"] = "/sunyny/BolScripts/gh-pages/TEAM Y Teemo.version"
+}
+local SCRIPT_LIBS = {
+	["SourceLib"] = "https://raw.github.com/LegendBot/Scripts/master/Common/SourceLib.lua",
+}
 
-local ScriptPath = "/sunyny/BolScripts/gh-pages/TEAM Y Teemo.lua".."?rand="..math.random(1,10000)
-local UpdateURL = "https://"..Host..ScriptPath
-
-local VersionPath = "/sunyny/BolScripts/gh-pages/TEAM Y Teemo.version".."?rand="..math.random(1,10000)
-local VersionData = tonumber(GetWebResult(Host, VersionPath))
-
-if AutoUpdate then
-
-  if VersionData then
-  
-    ServerVersion = type(VersionData) == "number" and VersionData or nil
-    
-    if ServerVersion then
-    
-      if tonumber(Version) < ServerVersion then
-        ScriptMsg("New version available: v"..VersionData)
-        ScriptMsg("Updating, please don't press F9.")
-        DelayAction(function() DownloadFile(UpdateURL, ScriptFilePath, function () ScriptMsg("Successfully updated.: v"..Version.." => v"..VersionData..", Press F9 twice to load the updated version.") end) end, 3)
-      else
-        ScriptMsg("You've got the latest version("..Version") Thanks Use TEAM Y Teemo")
-      end
-      
-    end
-    
-  else
-    ScriptMsg("Error downloading version info.")
-  end
-  
-else
-  ScriptMsg("AutoUpdate: false")
-end
+--{ Initiate Script (Checks for updates)
+	function Initiate()
+		for LIBRARY, LIBRARY_URL in pairs(SCRIPT_LIBS) do
+			if FileExist(LIB_PATH..LIBRARY..".lua") then
+				require(LIBRARY)
+			else
+				DOWNLOADING_LIBS = true
+				ScriptMsg("Missing Library! Downloading "..LIBRARY..". If the library doesn't download, please download it manually.")
+				DownloadFile(LIBRARY_URL,LIB_PATH..LIBRARY..".lua",function() ScriptMsg("Successfully downloaded ("..LIBRARY") Thanks Use TEAM Y Teemo") end)
+			end
+		end
+		if DOWNLOADING_LIBS then return true end
+		if SCRIPT_UPDATER["Activate"] then
+			SourceUpdater("<font color=\"#00A300\">"..SCRIPT_INFO["Name"].."</font>", SCRIPT_INFO["Version"], SCRIPT_UPDATER["URL_HOST"], SCRIPT_UPDATER["URL_PATH"], SCRIPT_UPDATER["Script"], SCRIPT_UPDATER["URL_VERSION"]):CheckUpdate()
+		end
+	end
+	if Initiate() then return end
 
 -- update
 
@@ -230,7 +229,7 @@ end
  	if myHero:GetSpellData(SUMMONER_1).name:find("summonerdot") or myHero:GetSpellData(SUMMONER_2).name:find("summonerdot") then 
 		if ConfigYT.Language.Language==1 then
 			ConfigYT:addSubMenu("점화", "ignite")
-				ConfigYT.ignite:addParam("autouse", "?자동사용", SCRIPT_PARAM_ONOFF, true)
+				ConfigYT.ignite:addParam("autouse", "자동사용", SCRIPT_PARAM_ONOFF, true)
 		else
 			ConfigYT:addSubMenu("ignite", "ignite")
 				ConfigYT.ignite:addParam("autouse", "Auto Use", SCRIPT_PARAM_ONOFF, true)
