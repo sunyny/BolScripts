@@ -6,7 +6,7 @@ if myHero.charName ~="Teemo" then return end
 
 local UPDATE_HOST = "raw.github.com"
 
-local UPDATE_PATH = "/sunyny/BolScripts/7fc64a41600b58b345d6305848884970c110355f/TEAM Y Teemo.lua".."?rand="..math.random(1,10000)
+local UPDATE_PATH = "/sunyny/BolScripts/gh-pages/TEAM Y Teemo.lua".."?rand="..math.random(1,10000)
 
 local UPDATE_FILE_PATH = LIB_PATH.."TEAM Y Teemo.lua"
 
@@ -14,7 +14,7 @@ local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 
 if AUTO_UPDATE then
 
-	local ServerData = GetWebResult(UPDATE_HOST, "/sunyny/BolScripts/7fc64a41600b58b345d6305848884970c110355f/TEAM Y Teemo.version")
+	local ServerData = GetWebResult(UPDATE_HOST, "/sunyny/BolScripts/gh-pages/TEAM Y Teemo.version")
 
 	if ServerData then
 
